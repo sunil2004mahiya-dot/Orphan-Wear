@@ -1,0 +1,5 @@
+{
+  "rootDirectory": "app",
+  "installCommand": "bun install --frozen-lockfile",
+  "buildCommand": "bun run build"
+}
