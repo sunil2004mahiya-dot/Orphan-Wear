@@ -1,0 +1,27 @@
+{
+  "name": "orphan-wear",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Orphan Wear — one of one streetwear. 3D scroll storefront.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@react-three/drei": "^10.7.8",
+    "@react-three/fiber": "^9.7.0",
+    "next": "^15.4.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "three": "^0.170.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.30",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.6",
+    "@types/three": "^0.170.0",
+    "typescript": "^5.8.3"
+  }
+}
