@@ -17,6 +17,7 @@ export function Hero() {
   const video = useRef<HTMLVideoElement>(null);
   const progress = useRef(0);
   const targetTime = useRef(0);
+  const pointer = useRef({ x: 0, y: 0, speed: 0 });
 
   useEffect(() => {
     const el = wrap.current;
@@ -35,12 +36,16 @@ export function Hero() {
         const dissolveProgress = Math.min(1, Math.max(0, (p - 0.38) / 0.62));
         const safeDuration = Math.max(0, media.duration - 1.0);
         targetTime.current = safeDuration * dissolveProgress;
+        const delta = targetTime.current - media.currentTime;
         if (p < 0.38) {
+          media.playbackRate = 0.82 + pointer.current.speed * 0.55;
           if (media.paused) void media.play().catch(() => undefined);
         } else {
           media.pause();
-          media.currentTime += (targetTime.current - media.currentTime) * 0.12;
+          if (Math.abs(delta) > 0.035) media.currentTime += delta * 0.08;
         }
+        media.style.setProperty("--video-tilt", `${pointer.current.x * 1.8}deg`);
+        media.style.setProperty("--video-drift", `${pointer.current.x * 8}px`);
       }
       raf = requestAnimationFrame(tick);
     };
@@ -63,20 +68,32 @@ export function Hero() {
       const r = st.getBoundingClientRect();
       tx = e.clientX - r.left;
       ty = e.clientY - r.top;
+      pointer.current.x = (tx / r.width - 0.5) * 2;
+      pointer.current.y = (ty / r.height - 0.5) * 2;
+      pointer.current.speed = Math.min(1, Math.hypot(e.movementX, e.movementY) / 24);
     };
     const loop = () => {
       x += (tx - x) * 0.16;
       y += (ty - y) * 0.16;
       const speed = Math.hypot(tx - x, ty - y);
       const scale = Math.min(1.28, 0.92 + speed / 420);
-      tr.style.transform = `translate3d(${x - 170}px, ${y - 170}px, 0) scale(${scale})`;
+      tr.style.transform = `translate3d(${x - 36}px, ${y - 36}px, 0) scale(${scale})`;
       tr.style.setProperty("--magnet-speed", Math.min(1, speed / 80).toFixed(2));
       raf = requestAnimationFrame(loop);
     };
+    const leave = () => {
+      pointer.current.x = 0;
+      pointer.current.y = 0;
+      pointer.current.speed = 0;
+      tx = st.clientWidth / 2;
+      ty = st.clientHeight / 2;
+    };
     st.addEventListener("pointermove", move);
+    st.addEventListener("pointerleave", leave);
     raf = requestAnimationFrame(loop);
     return () => {
       st.removeEventListener("pointermove", move);
+      st.removeEventListener("pointerleave", leave);
       cancelAnimationFrame(raf);
     };
   }, []);
@@ -97,7 +114,7 @@ export function Hero() {
             muted
             playsInline
             preload="auto"
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Dissolve%202-DvAgmdEYFqrKmiZgizmpSz7zwmqbBf.mp4"
+            src="/assets/dissolve.mp4"
           />
         </div>
 

@@ -598,6 +598,8 @@ html {
   opacity: 1;
   mix-blend-mode: normal;
   filter: saturate(0.86) contrast(1.08);
+  transform: translateX(var(--video-drift, 0px)) rotate(var(--video-tilt, 0deg)) scale(1.015);
+  transform-origin: center;
   pointer-events: none;
 }
 /* Fade the grid out around the tee: no visible base plate */
@@ -763,9 +765,7 @@ html {
   min-height: 340px;
   overflow: hidden;
   isolation: isolate;
-  perspective: 800px;
-  background: radial-gradient(circle at calc(50% + var(--card-x) * 18%) calc(46% + var(--card-y) * 12%), rgb(245 205 0 / 0.12), transparent 42%), #080808;
-  transition: background 300ms ease;
+  background: #080808;
 }
 .ow-card__media--3d img {
   position: absolute;
@@ -773,21 +773,10 @@ html {
   top: 50%;
   width: 80%;
   max-height: 320px;
-  transform: translate(calc(-50% + var(--card-x) * 10px), calc(-50% + var(--card-y) * 8px)) rotateX(calc(var(--card-y) * -3deg)) rotateY(calc(var(--card-x) * 4deg)) scale(1.02);
+  transform: translate(calc(-50% + var(--card-x) * 4px), calc(-50% + var(--card-y) * 3px));
   object-fit: contain;
-  filter: drop-shadow(calc(var(--card-x) * 8px) calc(var(--card-y) * 7px) 16px rgb(0 0 0 / 0.42));
-  transition: filter 300ms ease;
+  filter: drop-shadow(0 12px 18px rgb(0 0 0 / 0.34));
   will-change: transform;
-}
-.ow-card__sheen {
-  position: absolute;
-  inset: -30%;
-  z-index: 2;
-  pointer-events: none;
-  background: linear-gradient(115deg, transparent 38%, rgb(245 205 0 / 0.16) 48%, transparent 58%);
-  transform: translateX(calc(var(--card-x) * 30%)) translateY(calc(var(--card-y) * 18%));
-  transition: transform 300ms ease;
-  mix-blend-mode: screen;
 }
 /* ---------- Motion ---------- */
 .ow-rise {

@@ -37,7 +37,6 @@ export function Product3D({ poster, alt }: { model: string; poster: string; alt:
   return (
     <div className="ow-card__media ow-card__media--3d" ref={media}>
       <img alt={alt} height={1152} loading="lazy" src={poster} width={928} />
-      <span aria-hidden="true" className="ow-card__sheen" />
     </div>
   );
 }
