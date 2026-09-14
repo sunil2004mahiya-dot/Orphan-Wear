@@ -35,7 +35,7 @@ export function Hero() {
       progress.current = p;
       el.style.setProperty("--p", p.toFixed(4));
       const media = video.current;
-      if (media?.readyState >= 2 && Number.isFinite(media.duration)) {
+      if (media && media.readyState >= 2 && Number.isFinite(media.duration)) {
         const dissolveProgress = Math.min(1, Math.max(0, (p - 0.18) / 0.82));
         const safeDuration = Math.max(0, media.duration - 1.0);
         targetTime.current = safeDuration * dissolveProgress;
