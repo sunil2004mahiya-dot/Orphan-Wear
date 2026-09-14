@@ -607,8 +607,8 @@ html {
   background-image: none;
 }
 .ow-hero__stage > .ow-hero__canvas {
-  -webkit-mask-image: radial-gradient(ellipse 74% 74% at 50% 47%, black 38%, transparent 86%);
-  mask-image: radial-gradient(ellipse 74% 74% at 50% 47%, black 38%, transparent 86%);
+  -webkit-mask-image: radial-gradient(ellipse 74% 74% at 50% 47%, black 48%, transparent 92%);
+  mask-image: radial-gradient(ellipse 74% 74% at 50% 47%, black 48%, transparent 92%);
 }
 .ow-hero__canvas {
   position: absolute;
@@ -759,24 +759,20 @@ html {
 }
 /* 3D product cards */
 .ow-card__media--3d {
-  --card-x: 0;
-  --card-y: 0;
   position: relative;
   min-height: 340px;
   overflow: hidden;
   isolation: isolate;
+  display: grid;
+  place-items: center;
   background: #080808;
 }
 .ow-card__media--3d img {
-  position: absolute;
-  left: 50%;
-  top: 50%;
+  display: block;
   width: 80%;
   max-height: 320px;
-  transform: translate(calc(-50% + var(--card-x) * 4px), calc(-50% + var(--card-y) * 3px));
   object-fit: contain;
   filter: drop-shadow(0 12px 18px rgb(0 0 0 / 0.34));
-  will-change: transform;
 }
 /* ---------- Motion ---------- */
 .ow-rise {

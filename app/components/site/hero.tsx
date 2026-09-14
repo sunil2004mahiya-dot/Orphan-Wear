@@ -23,7 +23,10 @@ export function Hero() {
     const el = wrap.current;
     const media = video.current;
     if (!el) return;
-    media?.load();
+    if (media) {
+      media.currentTime = 0;
+      media.load();
+    }
     let raf = 0;
     const tick = () => {
       const r = el.getBoundingClientRect();
@@ -32,17 +35,14 @@ export function Hero() {
       progress.current = p;
       el.style.setProperty("--p", p.toFixed(4));
       const media = video.current;
-      if (media?.readyState >= 1 && Number.isFinite(media.duration)) {
-        const dissolveProgress = Math.min(1, Math.max(0, (p - 0.38) / 0.62));
+      if (media?.readyState >= 2 && Number.isFinite(media.duration)) {
+        const dissolveProgress = Math.min(1, Math.max(0, (p - 0.18) / 0.82));
         const safeDuration = Math.max(0, media.duration - 1.0);
         targetTime.current = safeDuration * dissolveProgress;
+        media.pause();
         const delta = targetTime.current - media.currentTime;
-        if (p < 0.38) {
-          media.playbackRate = 0.82 + pointer.current.speed * 0.55;
-          if (media.paused) void media.play().catch(() => undefined);
-        } else {
-          media.pause();
-          if (Math.abs(delta) > 0.035) media.currentTime += delta * 0.08;
+        if (Math.abs(delta) > 0.006 && !media.seeking) {
+          media.currentTime = targetTime.current;
         }
         media.style.setProperty("--video-tilt", `${pointer.current.x * 1.8}deg`);
         media.style.setProperty("--video-drift", `${pointer.current.x * 8}px`);
@@ -114,7 +114,7 @@ export function Hero() {
             muted
             playsInline
             preload="auto"
-            src="/assets/dissolve.mp4"
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Dissolve%202-DvAgmdEYFqrKmiZgizmpSz7zwmqbBf.mp4"
           />
         </div>
 
