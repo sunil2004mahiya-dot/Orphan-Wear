@@ -19,6 +19,7 @@ export function Hero() {
   const wrap = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const tracer = useRef<HTMLDivElement>(null);
+  const video = useRef<HTMLVideoElement>(null);
   const progress = useRef(0);
   const [ready, setReady] = useState(false);
 
@@ -42,6 +43,16 @@ export function Hero() {
       const p = total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 0;
       progress.current = p;
       el.style.setProperty("--p", p.toFixed(4));
+      const media = video.current;
+      if (media?.readyState >= 1 && Number.isFinite(media.duration)) {
+        const dissolveProgress = Math.min(1, Math.max(0, (p - 0.42) / 0.58));
+        if (p < 0.42) {
+          if (media.paused) void media.play().catch(() => undefined);
+        } else {
+          media.pause();
+          media.currentTime = media.duration * dissolveProgress;
+        }
+      }
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -67,7 +78,10 @@ export function Hero() {
     const loop = () => {
       x += (tx - x) * 0.16;
       y += (ty - y) * 0.16;
-      tr.style.transform = `translate3d(${x - 170}px, ${y - 170}px, 0)`;
+      const speed = Math.hypot(tx - x, ty - y);
+      const scale = Math.min(1.28, 0.92 + speed / 420);
+      tr.style.transform = `translate3d(${x - 170}px, ${y - 170}px, 0) scale(${scale})`;
+      tr.style.setProperty("--magnet-speed", Math.min(1, speed / 80).toFixed(2));
       raf = requestAnimationFrame(loop);
     };
     st.addEventListener("pointermove", move);
@@ -85,6 +99,17 @@ export function Hero() {
           <img alt="" height={1024} src="/assets/brand/orphan-mark.png" width={1024} />
         </div>
         <div className="ow-hero__canvas">
+          <video
+            ref={video}
+            aria-hidden="true"
+            className="ow-hero__video"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            src="/assets/dissolve.mp4"
+          />
           <img
             alt="Orphan Wear Box Logo tee"
             className="ow-hero__poster"
