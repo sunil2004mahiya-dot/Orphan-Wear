@@ -134,8 +134,9 @@ export function Garment({
     const k = 1 - Math.exp(-dt * 4);
     tilt.current.x += (pointer.y * magnet * h - tilt.current.x) * k;
     tilt.current.y += (pointer.x * magnet * 1.4 * h - tilt.current.y) * k;
-    g.rotation.x = -tilt.current.x * 0.6 + Math.sin(t * 0.7) * 0.03;
-    g.rotation.y = tilt.current.y + Math.sin(t * spin) * 0.35;
+    g.rotation.x = -tilt.current.x * 0.42 + Math.sin(t * 0.7) * 0.018;
+    g.rotation.y = tilt.current.y * 0.82 + Math.sin(t * spin) * 0.08;
+    g.position.x = pointer.x * magnet * 0.08 * h;
     g.position.y = yOffset + Math.sin(t * 1.1) * floatAmp + p * 0.35;
     // dissolve on the second half of the header scroll
     const d = THREE.MathUtils.clamp((p - 0.45) / 0.5, 0, 1);

@@ -7,8 +7,6 @@ import { ScrambleText } from "./scramble-text";
 const HeroCanvas = lazy(() => import("@/app/components/three/hero-canvas"));
 
 export const HERO_MODEL = "/assets/models/box-logo-tee.glb";
-export const HERO_POSTER = "/assets/products/box-logo-tee.jpg";
-
 /**
  * Header: 200dvh of scroll, a sticky stage. Beat 1 (top half): the tee floats
  * and follows the cursor. Beat 2 (bottom half): the tee dissolves while the
@@ -46,11 +44,12 @@ export function Hero() {
       const media = video.current;
       if (media?.readyState >= 1 && Number.isFinite(media.duration)) {
         const dissolveProgress = Math.min(1, Math.max(0, (p - 0.42) / 0.58));
+        const targetTime = media.duration * dissolveProgress;
         if (p < 0.42) {
           if (media.paused) void media.play().catch(() => undefined);
-        } else {
+        } else if (Math.abs(media.currentTime - targetTime) > 0.018) {
           media.pause();
-          media.currentTime = media.duration * dissolveProgress;
+          media.currentTime += (targetTime - media.currentTime) * 0.18;
         }
       }
       raf = requestAnimationFrame(tick);
@@ -109,14 +108,6 @@ export function Hero() {
             playsInline
             preload="auto"
             src="/assets/dissolve.mp4"
-          />
-          <img
-            alt="Orphan Wear Box Logo tee"
-            className="ow-hero__poster"
-            data-hidden={ready ? "true" : "false"}
-            height={1152}
-            src={HERO_POSTER}
-            width={928}
           />
           {ready ? (
             <Suspense fallback={null}>
