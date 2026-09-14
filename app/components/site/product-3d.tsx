@@ -1,23 +1,43 @@
 "use client";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 
-const ProductCanvas = lazy(() => import("@/app/components/three/product-canvas"));
-
-/** Poster on the server and for reduced motion; the 3D viewer once mounted. */
-export function Product3D({ model, poster, alt }: { model: string; poster: string; alt: string }) {
-  const [ready, setReady] = useState(false);
+/** Stable product poster with a cursor-reactive live parallax treatment. */
+export function Product3D({ poster, alt }: { model: string; poster: string; alt: string }) {
+  const media = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!reduce) setReady(true);
+    const el = media.current;
+    if (!el) return;
+    let raf = 0;
+    let targetX = 0;
+    let targetY = 0;
+    let x = 0;
+    let y = 0;
+    const move = (event: PointerEvent) => {
+      const rect = el.getBoundingClientRect();
+      targetX = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
+      targetY = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+    };
+    const leave = () => { targetX = 0; targetY = 0; };
+    const frame = () => {
+      x += (targetX - x) * 0.08;
+      y += (targetY - y) * 0.08;
+      el.style.setProperty("--card-x", x.toFixed(3));
+      el.style.setProperty("--card-y", y.toFixed(3));
+      raf = requestAnimationFrame(frame);
+    };
+    el.addEventListener("pointermove", move);
+    el.addEventListener("pointerleave", leave);
+    raf = requestAnimationFrame(frame);
+    return () => {
+      el.removeEventListener("pointermove", move);
+      el.removeEventListener("pointerleave", leave);
+      cancelAnimationFrame(raf);
+    };
   }, []);
   return (
-    <div className="ow-card__media ow-card__media--3d">
-      <img alt={alt} data-hidden={ready ? "true" : "false"} height={1152} loading="lazy" src={poster} width={928} />
-      {ready ? (
-        <Suspense fallback={null}>
-          <ProductCanvas url={model} />
-        </Suspense>
-      ) : null}
+    <div className="ow-card__media ow-card__media--3d" ref={media}>
+      <img alt={alt} height={1152} loading="lazy" src={poster} width={928} />
+      <span aria-hidden="true" className="ow-card__sheen" />
     </div>
   );
 }

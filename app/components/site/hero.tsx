@@ -1,12 +1,9 @@
 "use client";
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 import { CustomCta, ShopCta } from "./ctas";
 import { ScrambleText } from "./scramble-text";
 
-const HeroCanvas = lazy(() => import("@/app/components/three/hero-canvas"));
-
-export const HERO_MODEL = "/assets/models/box-logo-tee.glb";
 /**
  * Header: 200dvh of scroll, a sticky stage. Beat 1 (top half): the tee floats
  * and follows the cursor. Beat 2 (bottom half): the tee dissolves while the
@@ -19,21 +16,13 @@ export function Hero() {
   const tracer = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const progress = useRef(0);
-  const [ready, setReady] = useState(false);
+  const targetTime = useRef(0);
 
   useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const gl = (() => {
-      try {
-        const c = document.createElement("canvas");
-        return Boolean(c.getContext("webgl2") || c.getContext("webgl"));
-      } catch {
-        return false;
-      }
-    })();
-    if (!reduce && gl) setReady(true);
     const el = wrap.current;
+    const media = video.current;
     if (!el) return;
+    media?.load();
     let raf = 0;
     const tick = () => {
       const r = el.getBoundingClientRect();
@@ -43,13 +32,14 @@ export function Hero() {
       el.style.setProperty("--p", p.toFixed(4));
       const media = video.current;
       if (media?.readyState >= 1 && Number.isFinite(media.duration)) {
-        const dissolveProgress = Math.min(1, Math.max(0, (p - 0.42) / 0.58));
-        const targetTime = media.duration * dissolveProgress;
-        if (p < 0.42) {
+        const dissolveProgress = Math.min(1, Math.max(0, (p - 0.38) / 0.62));
+        const safeDuration = Math.max(0, media.duration - 1.0);
+        targetTime.current = safeDuration * dissolveProgress;
+        if (p < 0.38) {
           if (media.paused) void media.play().catch(() => undefined);
-        } else if (Math.abs(media.currentTime - targetTime) > 0.018) {
+        } else {
           media.pause();
-          media.currentTime += (targetTime - media.currentTime) * 0.18;
+          media.currentTime += (targetTime.current - media.currentTime) * 0.12;
         }
       }
       raf = requestAnimationFrame(tick);
@@ -107,13 +97,8 @@ export function Hero() {
             muted
             playsInline
             preload="auto"
-            src="/assets/dissolve.mp4"
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Dissolve%202-DvAgmdEYFqrKmiZgizmpSz7zwmqbBf.mp4"
           />
-          {ready ? (
-            <Suspense fallback={null}>
-              <HeroCanvas progress={progress} url={HERO_MODEL} />
-            </Suspense>
-          ) : null}
         </div>
 
         <div aria-hidden="true" className="ow-hero__tracer" ref={tracer} />
