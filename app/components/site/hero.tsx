@@ -115,15 +115,36 @@ export function Hero() {
         </div>
 
         <div className="ow-hero__copy ow-hero__copy--two">
-          <h2 className="ow-hero__title">
-            <ScrambleText as="span" onMount={false} text="Made once." />
-            <br />
-            <ScrambleText as="span" onMount={false} text="Then gone." />
-          </h2>
-          <p className="ow-hero__line">
-            <ScrambleText as="span" onMount={false} text="When it sells, the number is closed for good." />
-          </p>
-          <CustomCta />
+          <div className="ow-hero__statement">
+            <p className="ow-hero__eyebrow">Chapter 02 / The construction</p>
+            <h2 className="ow-hero__title">
+              <ScrambleText as="span" onMount={false} text="Made once." />
+              <br />
+              <ScrambleText as="span" onMount={false} text="Then gone." />
+            </h2>
+            <p className="ow-hero__line">
+              <ScrambleText as="span" onMount={false} text="When it sells, the number is closed for good." />
+            </p>
+            <CustomCta />
+          </div>
+          <aside className="ow-hero__details" aria-label="Product details">
+            <h3>Details matter.</h3>
+            {[
+              ["01", "Heavyweight cotton", "Boxy, garment-dyed blanks that hold their shape."],
+              ["02", "Hand bleached", "Every splatter is poured by hand. No two are the same."],
+              ["03", "In-house embroidery", "Finished at the Orphan table, never outsourced."],
+              ["04", "Signed and numbered", "Each one of one is signed before it ships."],
+              ["05", "Customizable", "Name, number or scripture added on request."],
+            ].map(([number, title, description]) => (
+              <div className="ow-hero__detail" key={number}>
+                <span className="ow-hero__detail-number">{number}</span>
+                <div>
+                  <strong>{title}</strong>
+                  <p>{description}</p>
+                </div>
+              </div>
+            ))}
+          </aside>
         </div>
 
         <div aria-hidden="true" className="ow-hero__meter">
