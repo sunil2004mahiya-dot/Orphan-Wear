@@ -2,9 +2,25 @@
 
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 
-import { GlBoundary } from "./gl-boundary";
+/** Product poster with a cursor-tracked reflective frame. */
+export function Product3D({ poster, alt }: { model: string; poster: string; alt: string }) {
+  const frameRef = useRef<HTMLDivElement>(null);
 
-const ProductCanvas = lazy(() => import("@/app/components/three/product-canvas"));
+  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    const frame = frameRef.current;
+    if (!frame || event.pointerType === "touch") return;
+    const bounds = frame.getBoundingClientRect();
+    frame.style.setProperty("--reflect-x", `${event.clientX - bounds.left}px`);
+    frame.style.setProperty("--reflect-y", `${event.clientY - bounds.top}px`);
+  }
+
+  function resetReflection() {
+    frameRef.current?.style.setProperty("--reflect-opacity", "0");
+  }
+
+  function showReflection() {
+    frameRef.current?.style.setProperty("--reflect-opacity", "1");
+  }
 
 /** Product media keeps a guaranteed poster while progressively enhancing with 3D and reflection. */
 export function Product3D({
