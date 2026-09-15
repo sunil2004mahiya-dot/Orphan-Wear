@@ -1,3 +1,4 @@
+
 :root {
   --font-sans: var(--font-jb), ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-serif: var(--font-pirata), "UnifrakturCook", serif;
@@ -19,8 +20,8 @@ html {
   --ow-muted: #8b8b86;
   --ow-accent: #e9c400;
   --ow-accent-ink: #0b0b0b;
-  --ow-mono: var(--font-jb), ui-monospace, SFMono-Regular, Menlo, monospace;
-  --ow-black: var(--font-pirata), "UnifrakturCook", serif;
+  --ow-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --ow-black: "Pirata One", "UnifrakturCook", serif;
   --ow-cell: 48px;
 }
 .ow {
@@ -563,60 +564,57 @@ html {
   -webkit-mask-image: radial-gradient(ellipse 62% 62% at center, black 40%, transparent 78%);
   mask-image: radial-gradient(ellipse 62% 62% at center, black 40%, transparent 78%);
 }
-/* White tracer: soft magnet glow chasing the cursor */
+/* Cursor reticle: a quiet technical accent that belongs to the grid. */
 .ow-hero__tracer {
+  --magnet-speed: 0;
   position: absolute;
   z-index: 2;
   left: 0;
   top: 0;
-  width: 150px;
-  height: 150px;
+  width: 72px;
+  height: 72px;
+  border: 1px solid rgb(245 205 0 / 0.72);
   border-radius: 50%;
   pointer-events: none;
-  background: radial-gradient(
-    circle at center,
-    rgb(255 255 255 / 0.32) 0%,
-    rgb(255 255 255 / 0.07) 36%,
-    transparent 70%
-  );
+  background: radial-gradient(circle, rgb(245 205 0 / 0.16) 0 2px, transparent 3px 20px, rgb(245 205 0 / 0.1) 21px 22px, transparent 23px);
+  box-shadow: 0 0 22px rgb(245 205 0 / 0.12);
   mix-blend-mode: screen;
+}
+.ow-hero__tracer::before,
+.ow-hero__tracer::after {
+  content: "";
+  position: absolute;
+  background: var(--ow-accent);
+}
+.ow-hero__tracer::before { left: 50%; top: -8px; width: 1px; height: 16px; }
+.ow-hero__tracer::after { left: -8px; top: 50%; width: 16px; height: 1px; }
+.ow-hero__video {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 1;
+  mix-blend-mode: normal;
+  filter: saturate(0.86) contrast(1.08);
+  transform: translateX(var(--video-drift, 0px)) rotate(var(--video-tilt, 0deg)) scale(1.015);
+  transform-origin: center;
+  pointer-events: none;
 }
 /* Fade the grid out around the tee: no visible base plate */
 .ow-hero__stage {
   background-image: none;
 }
 .ow-hero__stage > .ow-hero__canvas {
-  -webkit-mask-image: radial-gradient(ellipse 74% 74% at 50% 47%, black 38%, transparent 86%);
-  mask-image: radial-gradient(ellipse 74% 74% at 50% 47%, black 38%, transparent 86%);
-}
-.ow-hero__poster {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: min(70vh, 80vw);
-  height: auto;
-  transform: translate(-50%, -50%);
-  mix-blend-mode: screen;
-  -webkit-mask-image: radial-gradient(ellipse 58% 58% at center, black 46%, transparent 88%);
-  mask-image: radial-gradient(ellipse 58% 58% at center, black 46%, transparent 88%);
+  -webkit-mask-image: radial-gradient(ellipse 74% 74% at 50% 47%, black 48%, transparent 92%);
+  mask-image: radial-gradient(ellipse 74% 74% at 50% 47%, black 48%, transparent 92%);
 }
 .ow-hero__canvas {
   position: absolute;
   inset: 0;
   z-index: 1;
-}
-.ow-hero__poster {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: min(70vh, 80vw);
-  height: auto;
-  transform: translate(-50%, -50%);
-  mix-blend-mode: screen;
-}
-.ow-hero__poster[data-hidden="true"],
-.ow-card__media--3d img[data-hidden="true"] {
-  visibility: hidden;
+  overflow: hidden;
 }
 .ow-hero__copy {
   position: absolute;
@@ -628,6 +626,62 @@ html {
   gap: 1.1rem;
   justify-items: start;
   pointer-events: none;
+}
+.ow-hero__copy--one {
+  max-width: 30rem;
+}
+.ow-hero__copy--two {
+  grid-template-columns: minmax(18rem, 0.9fr) minmax(20rem, 1fr);
+  align-items: end;
+  gap: clamp(2rem, 8vw, 9rem);
+}
+.ow-hero__statement {
+  display: grid;
+  gap: 1rem;
+  max-width: 31rem;
+}
+.ow-hero__eyebrow {
+  margin: 0;
+  color: var(--ow-accent);
+  font-size: 0.56rem;
+  letter-spacing: 0.22em;
+}
+.ow-hero__details {
+  width: min(100%, 31rem);
+  justify-self: end;
+  border-top: 1px solid var(--ow-line);
+  pointer-events: auto;
+}
+.ow-hero__details h3 {
+  margin: 0;
+  padding: 0.85rem 0 1rem;
+  font-size: clamp(1.1rem, 2vw, 1.8rem);
+  letter-spacing: -0.04em;
+}
+.ow-hero__detail {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: 0.85rem;
+  padding: 0.8rem 0;
+  border-top: 1px solid var(--ow-line);
+}
+.ow-hero__detail-number {
+  color: var(--ow-accent);
+  font-size: 0.58rem;
+  letter-spacing: 0.15em;
+}
+.ow-hero__detail strong {
+  display: block;
+  font-size: 0.63rem;
+  letter-spacing: 0.14em;
+}
+.ow-hero__detail p {
+  margin: 0.4rem 0 0;
+  color: var(--ow-muted);
+  font-size: 0.58rem;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  text-transform: none;
 }
 .ow-hero__copy > * {
   pointer-events: auto;
@@ -642,9 +696,9 @@ html {
 .ow-hero__title {
   margin: 0;
   font-weight: 800;
-  font-size: clamp(2.4rem, 6.4vw, 6.4rem);
-  letter-spacing: -0.07em;
-  line-height: 0.82;
+  font-size: clamp(2.8rem, 6.4vw, 7rem);
+  letter-spacing: -0.065em;
+  line-height: 0.86;
   color: var(--ow-ink);
   text-shadow: 0 0 40px rgb(11 11 11 / 0.8);
 }
@@ -684,6 +738,18 @@ html {
   .ow-hero__copy {
     bottom: 5rem;
   }
+  .ow-hero__copy--two {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    max-height: calc(100dvh - 7rem);
+    overflow: hidden;
+  }
+  .ow-hero__details {
+    width: min(100%, 28rem);
+  }
+  .ow-hero__detail:nth-child(n + 5) {
+    display: none;
+  }
   .ow-hero__meter {
     display: none;
   }
@@ -695,15 +761,18 @@ html {
 .ow-card__media--3d {
   position: relative;
   min-height: 340px;
+  overflow: hidden;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  background: #080808;
 }
 .ow-card__media--3d img {
-  position: absolute;
-  left: 50%;
-  top: 50%;
+  display: block;
   width: 80%;
   max-height: 320px;
-  transform: translate(-50%, -50%);
   object-fit: contain;
+  filter: drop-shadow(0 12px 18px rgb(0 0 0 / 0.34));
 }
 /* ---------- Motion ---------- */
 .ow-rise {
@@ -727,374 +796,4 @@ html {
   .ow *::after {
     transition-duration: 0.01ms !important;
   }
-}
-/* ---------- Reference details: boxed copy, spec rail, soft magnet ---------- */
-.ow-nav__meta {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-}
-.ow-nav__sep {
-  width: 1px;
-  height: 0.9rem;
-  background: var(--ow-line);
-}
-.ow-nav__cart {
-  color: var(--ow-ink);
-}
-.ow-hero__box {
-  position: relative;
-  border: 1px solid var(--ow-line);
-  background: color-mix(in srgb, var(--ow-bg) 78%, transparent);
-  padding: 1rem 1.1rem;
-  display: grid;
-  gap: 0.9rem;
-  justify-items: start;
-  max-width: 30rem;
-}
-.ow-hero__box::before,
-.ow-hero__box::after,
-.ow-hero__box > .ow-cta-shop::before,
-.ow-hero__box > .ow-cta-custom::before {
-  content: "";
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  pointer-events: none;
-}
-.ow-hero__box::before {
-  top: -1px;
-  left: -1px;
-  border-top: 2px solid var(--ow-accent);
-  border-left: 2px solid var(--ow-accent);
-}
-.ow-hero__box::after {
-  top: -1px;
-  right: -1px;
-  border-top: 2px solid var(--ow-accent);
-  border-right: 2px solid var(--ow-accent);
-}
-.ow-hero__box p {
-  margin: 0;
-  font-size: 0.68rem;
-  letter-spacing: 0.22em;
-  color: var(--ow-muted);
-}
-.ow-hero__tracer {
-  width: 220px;
-  height: 220px;
-  background: radial-gradient(
-    circle at center,
-    rgb(255 255 255 / 0.30) 0%,
-    rgb(255 255 255 / 0.07) 34%,
-    transparent 66%
-  );
-}
-.ow-hero__specs {
-  position: absolute;
-  z-index: 3;
-  top: calc(76px + clamp(1rem, 3vw, 2.5rem));
-  right: clamp(1rem, 4vw, 4rem);
-  width: min(24rem, 30vw);
-  pointer-events: none;
-  opacity: calc(1 - clamp(0, var(--p) * 1.4, 1) * 0.85);
-  transform: translateX(calc(clamp(0, var(--p) * 1.4, 1) * 12%));
-}
-.ow-hero__specs-head h3 {
-  margin: 0 0 0.85rem;
-  font-size: clamp(1.3rem, 1.8vw, 1.9rem);
-  letter-spacing: -0.03em;
-  font-weight: 800;
-}
-.ow-specs {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  border-top: 1px solid var(--ow-line);
-}
-.ow-specs li {
-  display: grid;
-  grid-template-columns: 2rem 1fr;
-  gap: 0.7rem;
-  padding: 0.8rem 0;
-  border-bottom: 1px solid var(--ow-line);
-}
-.ow-specs__icon {
-  display: grid;
-  place-items: center;
-  width: 2rem;
-  height: 2rem;
-  border: 1px solid var(--ow-line);
-  color: var(--ow-accent);
-}
-.ow-specs__body {
-  padding-top: 0.1rem;
-}
-.ow-specs__t {
-  display: flex;
-  align-items: baseline;
-  gap: 0.55rem;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-}
-.ow-specs__n {
-  font-size: 0.64rem;
-  letter-spacing: 0.14em;
-  color: var(--ow-accent);
-}
-.ow-specs__d {
-  margin: 0.28rem 0 0;
-  font-size: 0.66rem;
-  letter-spacing: 0.05em;
-  line-height: 1.55;
-  color: var(--ow-muted);
-  text-transform: none;
-}
-@media (max-width: 1100px) {
-  .ow-hero__specs {
-    display: none;
-  }
-}
-/* Product media: poster always visible, 3D fades in above, frame + sheen */
-.ow-card__media--3d {
-  position: relative;
-  min-height: 340px;
-  border-top: 1px solid var(--ow-line);
-  overflow: hidden;
-}
-.ow-card__poster {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 82%;
-  max-height: 330px;
-  object-fit: contain;
-  transform: translate(-50%, -50%);
-}
-.ow-card__viewer {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  opacity: 0;
-  animation: ow-viewer-in 700ms ease-out forwards;
-}
-@keyframes ow-viewer-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-.ow-card__media--3d::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  pointer-events: none;
-  background: linear-gradient(
-    115deg,
-    transparent 32%,
-    rgb(255 255 255 / 0.06) 44%,
-    transparent 56%
-  );
-  transform: translateX(-120%);
-  transition: transform 900ms ease-out;
-}
-.ow-card:hover .ow-card__media--3d::after,
-.ow-card:focus-within .ow-card__media--3d::after {
-  transform: translateX(120%);
-}
-.ow-card {
-  animation: ow-card-glow 5s ease-in-out infinite;
-}
-@keyframes ow-card-glow {
-  0%,
-  100% {
-    box-shadow: inset 0 0 0 1px var(--ow-line);
-  }
-  50% {
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ow-ink) 40%, transparent);
-  }
-}
-/* ---------- Running numbers on product hover (reference interaction) ----- */
-.ow-card__scroller {
-  display: grid;
-  overflow: hidden;
-  grid-auto-rows: 1.2em;
-  line-height: 1.2em;
-}
-.ow-card__scroller span:last-child {
-  color: var(--ow-accent);
-}
-.ow-card:hover .ow-card__scroller,
-.ow-card:focus-within .ow-card__scroller {
-  margin-top: -1.2em;
-}
-.ow-card__scroller,
-.ow-card__scroller span {
-  transition: margin-top 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.ow-card__plus {
-  transition: transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.ow-card:hover .ow-card__plus,
-.ow-card:focus-within .ow-card__plus {
-  transform: rotate(90deg);
-  color: var(--ow-accent);
-}
-/* Spec rail moves to the SECOND hero beat (hidden at top of the page) */
-.ow-hero__specs--two {
-  opacity: calc(clamp(0, (var(--p) - 0.35) * 3, 1) * 0.5 + clamp(0, (var(--p) - 0.35) * 3, 1) * 0.5);
-  transform: translateY(calc(30px - clamp(0, (var(--p) - 0.35) * 3, 1) * 30px));
-  pointer-events: none;
-}
-@media (max-width: 1100px) {
-  .ow-hero__specs--two {
-    display: none;
-  }
-}
-/* Product hover: the running name/price reads as one line until hover */
-.ow-card__scroller {
-  overflow: hidden;
-  white-space: nowrap;
-}
-.ow-card__scroller span {
-  display: inline-block;
-  transition: transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.ow-card:hover .ow-card__scroller span:first-child,
-.ow-card:focus-within .ow-card__scroller span:first-child {
-  transform: translateY(-100%);
-}
-.ow-card:hover .ow-card__scroller span:last-child,
-.ow-card:focus-within .ow-card__scroller span:last-child {
-  transform: translateY(-100%);
-}
-/* Cool product media effect on hover: glitch skew + scan + RGB split */
-.ow-card__viewer {
-  opacity: 1;
-}
-.ow-card:hover .ow-card__media--3d,
-.ow-card:focus-within .ow-card__media--3d {
-  animation: ow-glitch 480ms steps(2, jump-none) 1;
-}
-@keyframes ow-glitch {
-  0% { transform: translate(0); filter: none; }
-  20% { transform: translate(-3px, 1px) skewX(-2deg); filter: drop-shadow(2px 0 0 rgb(255 0 60 / 0.35)) drop-shadow(-2px 0 0 rgb(0 220 255 / 0.35)); }
-  40% { transform: translate(3px, -1px) skewX(2deg); filter: drop-shadow(-2px 0 0 rgb(255 0 60 / 0.35)) drop-shadow(2px 0 0 rgb(0 220 255 / 0.35)); }
-  60% { transform: translate(-2px, 0) skewX(-1deg); filter: none; }
-  80% { transform: translate(2px, 1px); filter: drop-shadow(1px 0 0 rgb(255 255 255 / 0.25)); }
-  100% { transform: translate(0); filter: none; }
-}
-.ow-card__media--3d::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 4;
-  pointer-events: none;
-  background: linear-gradient(to bottom, transparent 0%, rgb(255 255 255 / 0.05) 50%, transparent 100%);
-  transform: translateY(-101%);
-  transition: transform 500ms ease-out;
-}
-.ow-card:hover .ow-card__media--3d::before,
-.ow-card:focus-within .ow-card__media--3d::before {
-  transform: translateY(101%);
-}
-/* ---------- Reference v3: clean numbers, scramble names, corner chip ----- */
-.ow-card__num {
-  position: relative;
-  display: inline-flex;
-  height: 1.1em;
-  overflow: hidden;
-  font-family: inherit;
-}
-.ow-card__num span,
-.ow-card__num b {
-  display: block;
-  height: 1.1em;
-  font-weight: inherit;
-}
-.ow-card__num b {
-  position: absolute;
-  top: 1.1em;
-  color: var(--ow-accent);
-  font-weight: 700;
-}
-.ow-card:hover .ow-card__num span,
-.ow-card:focus-within .ow-card__num span {
-  transform: translateY(-1.1em);
-}
-.ow-card:hover .ow-card__num b,
-.ow-card:focus-within .ow-card__num b {
-  transform: translateY(-1.1em);
-}
-.ow-card__num span,
-.ow-card__num b {
-  transition: transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.ow-card__name {
-  display: inline-block;
-  letter-spacing: 0.16em;
-  color: var(--ow-ink);
-}
-.ow-card:hover .ow-card__name,
-.ow-card:focus-within .ow-card__name {
-  color: var(--ow-accent);
-}
-/* Worldwide-shipping chip (hero corner, like the reference) */
-.ow-ship {
-  position: absolute;
-  z-index: 4;
-  right: clamp(1rem, 4vw, 4rem);
-  bottom: clamp(4.5rem, 10vh, 6.5rem);
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  border: 1px solid var(--ow-line);
-  padding: 0.55rem 0.7rem;
-  font-size: 0.56rem;
-  letter-spacing: 0.16em;
-  line-height: 1.5;
-  color: var(--ow-muted);
-  pointer-events: none;
-  opacity: calc(0.9 - clamp(0, (var(--p) - 0.25) * 2.4, 1) * 0.6);
-}
-.ow-ship__icon {
-  width: 26px;
-  height: 26px;
-  display: grid;
-  place-items: center;
-  color: var(--ow-ink);
-}
-@media (max-width: 760px) {
-  .ow-ship {
-    display: none;
-  }
-}
-/* ---------- Reference v4: end-of-hero dissolve, soft flashlight, smooth hover ---------- */
-/* Section 2: the tee scales and slides left so the spec rail owns the right */
-.ow-hero__canvas {
-  transform: translateX(calc(clamp(0, (var(--p) - 0.3) * 2.2, 1) * -14vw));
-}
-/* Flashlight: large radius, very faint, only lifts the grid under the cursor */
-.ow-hero__tracer {
-  width: 420px;
-  height: 420px;
-  background: radial-gradient(
-    circle at center,
-    rgb(255 255 255 / 0.10) 0%,
-    rgb(255 255 255 / 0.035) 40%,
-    transparent 72%
-  );
-}
-/* Product hover: smooth lift + tilt, no jitter */
-.ow-card:hover .ow-card__media--3d,
-.ow-card:focus-within .ow-card__media--3d {
-  animation: none;
-  transform: translateY(-6px) scale(1.02);
-}
-.ow-card__media--3d {
-  transition: transform 500ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }

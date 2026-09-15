@@ -1,13 +1,12 @@
 "use client";
-
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import { Suspense, useRef } from "react";
 import * as THREE from "three";
 
-import { AmbientLight, DirectionalLight, PointLight } from "./elements";
-import { Garment } from "./garment";
-import { Lightformers } from "./lightformers";
+import { AmbientLight, DirectionalLight, PointLight } from "@/app/components/three/elements";
+import { Garment } from "@/app/components/three/garment";
+import { Lightformers } from "@/app/components/three/lightformers";
 
 /** White key light that follows the cursor across the garment (the magnet). */
 function CursorLight() {
@@ -44,9 +43,9 @@ export default function HeroCanvas({
         <Suspense fallback={null}>
           <Environment
             background={false}
-            environmentIntensity={1.15}
+            environmentIntensity={0.9}
             frames={1}
-            resolution={256}
+            resolution={128}
           >
             <Lightformers />
           </Environment>
