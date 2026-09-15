@@ -1,5 +1,4 @@
 "use client";
-
 import { Canvas } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import { Suspense, useRef } from "react";
@@ -22,7 +21,7 @@ export default function ProductCanvas({ url }: { url: string }) {
       }}
     >
       <Canvas
-        camera={{ position: [0, 0, 4.2], fov: 30 }}
+        camera={{ position: [0, 0, 3.2], fov: 30 }}
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true }}
       >
@@ -32,13 +31,13 @@ export default function ProductCanvas({ url }: { url: string }) {
         <Suspense fallback={null}>
           <Environment
             background={false}
-            environmentIntensity={1.15}
+            environmentIntensity={0.9}
             frames={1}
-            resolution={128}
+            resolution={96}
           >
             <Lightformers />
           </Environment>
-          <Garment url={url} hover={hover} scale={0.62} spin={0.25} magnet={0.6} floatAmp={0.04} />
+          <Garment url={url} hover={hover} scale={0.95} spin={0.25} magnet={0.6} floatAmp={0.05} />
         </Suspense>
       </Canvas>
     </div>

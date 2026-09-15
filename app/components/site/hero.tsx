@@ -1,17 +1,8 @@
 "use client";
-
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 import { CustomCta, ShopCta } from "./ctas";
 import { ScrambleText } from "./scramble-text";
-import { SpecList } from "./spec-list";
-import { ShippingChip } from "./shipping-chip";
-import { GlBoundary } from "./gl-boundary";
-
-const HeroCanvas = lazy(() => import("@/app/components/three/hero-canvas"));
-
-export const HERO_MODEL = "/assets/models/box-logo-tee.glb";
-export const HERO_POSTER = "/assets/products/box-logo-tee.jpg";
 
 /**
  * Header: 200dvh of scroll, a sticky stage. Beat 1 (top half): the tee floats
@@ -23,22 +14,19 @@ export function Hero() {
   const wrap = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const tracer = useRef<HTMLDivElement>(null);
+  const video = useRef<HTMLVideoElement>(null);
   const progress = useRef(0);
-  const [ready, setReady] = useState(false);
+  const targetTime = useRef(0);
+  const pointer = useRef({ x: 0, y: 0, speed: 0 });
 
   useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const gl = (() => {
-      try {
-        const c = document.createElement("canvas");
-        return Boolean(c.getContext("webgl2") || c.getContext("webgl"));
-      } catch {
-        return false;
-      }
-    })();
-    if (!reduce && gl) setReady(true);
     const el = wrap.current;
+    const media = video.current;
     if (!el) return;
+    if (media) {
+      media.currentTime = 0;
+      media.load();
+    }
     let raf = 0;
     const tick = () => {
       const r = el.getBoundingClientRect();
@@ -46,6 +34,19 @@ export function Hero() {
       const p = total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 0;
       progress.current = p;
       el.style.setProperty("--p", p.toFixed(4));
+      const media = video.current;
+      if (media && media.readyState >= 2 && Number.isFinite(media.duration)) {
+        const dissolveProgress = Math.min(1, Math.max(0, (p - 0.18) / 0.82));
+        const safeDuration = Math.max(0, media.duration - 1.0);
+        targetTime.current = safeDuration * dissolveProgress;
+        media.pause();
+        const delta = targetTime.current - media.currentTime;
+        if (Math.abs(delta) > 0.006 && !media.seeking) {
+          media.currentTime = targetTime.current;
+        }
+        media.style.setProperty("--video-tilt", `${pointer.current.x * 1.8}deg`);
+        media.style.setProperty("--video-drift", `${pointer.current.x * 8}px`);
+      }
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -59,25 +60,40 @@ export function Hero() {
     const tr = tracer.current;
     if (!st || !tr) return;
     let raf = 0;
-    let tx = -140;
-    let ty = -140;
-    let x = -140;
-    let y = -140;
+    let tx = -200;
+    let ty = -200;
+    let x = -200;
+    let y = -200;
     const move = (e: PointerEvent) => {
       const r = st.getBoundingClientRect();
       tx = e.clientX - r.left;
       ty = e.clientY - r.top;
+      pointer.current.x = (tx / r.width - 0.5) * 2;
+      pointer.current.y = (ty / r.height - 0.5) * 2;
+      pointer.current.speed = Math.min(1, Math.hypot(e.movementX, e.movementY) / 24);
     };
     const loop = () => {
-      x += (tx - x) * 0.14;
-      y += (ty - y) * 0.14;
-      tr.style.transform = `translate3d(${x - 210}px, ${y - 210}px, 0)`;
+      x += (tx - x) * 0.16;
+      y += (ty - y) * 0.16;
+      const speed = Math.hypot(tx - x, ty - y);
+      const scale = Math.min(1.28, 0.92 + speed / 420);
+      tr.style.transform = `translate3d(${x - 36}px, ${y - 36}px, 0) scale(${scale})`;
+      tr.style.setProperty("--magnet-speed", Math.min(1, speed / 80).toFixed(2));
       raf = requestAnimationFrame(loop);
     };
+    const leave = () => {
+      pointer.current.x = 0;
+      pointer.current.y = 0;
+      pointer.current.speed = 0;
+      tx = st.clientWidth / 2;
+      ty = st.clientHeight / 2;
+    };
     st.addEventListener("pointermove", move);
+    st.addEventListener("pointerleave", leave);
     raf = requestAnimationFrame(loop);
     return () => {
       st.removeEventListener("pointermove", move);
+      st.removeEventListener("pointerleave", leave);
       cancelAnimationFrame(raf);
     };
   }, []);
@@ -89,21 +105,17 @@ export function Hero() {
           <img alt="" height={1024} src="/assets/brand/orphan-mark.png" width={1024} />
         </div>
         <div className="ow-hero__canvas">
-          <img
-            alt="Orphan Wear Box Logo tee"
-            className="ow-hero__poster"
-            data-hidden={ready ? "true" : "false"}
-            height={1152}
-            src={HERO_POSTER}
-            width={928}
+          <video
+            ref={video}
+            aria-hidden="true"
+            className="ow-hero__video"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Dissolve%202-DvAgmdEYFqrKmiZgizmpSz7zwmqbBf.mp4"
           />
-          {ready ? (
-            <GlBoundary>
-              <Suspense fallback={null}>
-                <HeroCanvas progress={progress} url={HERO_MODEL} />
-              </Suspense>
-            </GlBoundary>
-          ) : null}
         </div>
 
         <div aria-hidden="true" className="ow-hero__tracer" ref={tracer} />
@@ -114,46 +126,50 @@ export function Hero() {
             <br />
             <ScrambleText as="span" text="in last." />
           </h1>
-          <div className="ow-hero__box">
-            <p>
-              <ScrambleText as="span" text="Heavyweight. Hand bleached. Signed 1 of 1." />
-            </p>
-            <ShopCta />
-          </div>
+          <p className="ow-hero__line">
+            <ScrambleText as="span" text="Heavyweight. Hand bleached. Signed 1 of 1." />
+          </p>
+          <ShopCta />
         </div>
 
         <div className="ow-hero__copy ow-hero__copy--two">
-          <h2 className="ow-hero__title">
-            <ScrambleText as="span" onMount={false} text="Made once." />
-            <br />
-            <ScrambleText as="span" onMount={false} text="Then gone." />
-          </h2>
-          <div className="ow-hero__box">
-            <p>
-              <ScrambleText
-                as="span"
-                onMount={false}
-                text="When it sells, the number is closed for good."
-              />
+          <div className="ow-hero__statement">
+            <p className="ow-hero__eyebrow">Chapter 02 / The construction</p>
+            <h2 className="ow-hero__title">
+              <ScrambleText as="span" onMount={false} text="Made once." />
+              <br />
+              <ScrambleText as="span" onMount={false} text="Then gone." />
+            </h2>
+            <p className="ow-hero__line">
+              <ScrambleText as="span" onMount={false} text="When it sells, the number is closed for good." />
             </p>
             <CustomCta />
           </div>
+          <aside className="ow-hero__details" aria-label="Product details">
+            <h3>Details matter.</h3>
+            {[
+              ["01", "Heavyweight cotton", "Boxy, garment-dyed blanks that hold their shape."],
+              ["02", "Hand bleached", "Every splatter is poured by hand. No two are the same."],
+              ["03", "In-house embroidery", "Finished at the Orphan table, never outsourced."],
+              ["04", "Signed and numbered", "Each one of one is signed before it ships."],
+              ["05", "Customizable", "Name, number or scripture added on request."],
+            ].map(([number, title, description]) => (
+              <div className="ow-hero__detail" key={number}>
+                <span className="ow-hero__detail-number">{number}</span>
+                <div>
+                  <strong>{title}</strong>
+                  <p>{description}</p>
+                </div>
+              </div>
+            ))}
+          </aside>
         </div>
 
-        <aside aria-label="Details" className="ow-hero__specs ow-hero__specs--two">
-          <div className="ow-hero__specs-head">
-            <h3>Details matter.</h3>
-          </div>
-          <SpecList />
-        </aside>
-
-        <div className="ow-hero__meter">
+        <div aria-hidden="true" className="ow-hero__meter">
           <span>01</span>
           <i />
           <span>02</span>
         </div>
-
-        <ShippingChip />
       </div>
     </div>
   );

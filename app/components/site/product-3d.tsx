@@ -1,16 +1,28 @@
 "use client";
 
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 
-import { GlBoundary } from "./gl-boundary";
+/** Product poster with a cursor-tracked reflective frame. */
+export function Product3D({ poster, alt }: { model: string; poster: string; alt: string }) {
+  const frameRef = useRef<HTMLDivElement>(null);
 
-const ProductCanvas = lazy(() => import("@/app/components/three/product-canvas"));
+  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    const frame = frameRef.current;
+    if (!frame || event.pointerType === "touch") return;
+    const bounds = frame.getBoundingClientRect();
+    frame.style.setProperty("--reflect-x", `${event.clientX - bounds.left}px`);
+    frame.style.setProperty("--reflect-y", `${event.clientY - bounds.top}px`);
+  }
 
-/**
- * Product media: the poster JPEG is ALWAYS in the DOM first, so the card can
- * never be blank (previews, WebGL stalls, slow networks). The 3D viewer
- * fades in above it once a WebGL context is confirmed.
- */
+  function resetReflection() {
+    frameRef.current?.style.setProperty("--reflect-opacity", "0");
+  }
+
+  function showReflection() {
+    frameRef.current?.style.setProperty("--reflect-opacity", "1");
+  }
+
+/** Product media keeps a guaranteed poster while progressively enhancing with 3D and reflection. */
 export function Product3D({
   model,
   poster,
@@ -20,14 +32,16 @@ export function Product3D({
   poster: string;
   alt: string;
 }) {
+  const frameRef = useRef<HTMLDivElement>(null);
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
+
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const gl = (() => {
       try {
-        const c = document.createElement("canvas");
-        return Boolean(c.getContext("webgl2") || c.getContext("webgl"));
+        const canvas = document.createElement("canvas");
+        return Boolean(canvas.getContext("webgl2") || canvas.getContext("webgl"));
       } catch {
         return false;
       }
@@ -35,9 +49,24 @@ export function Product3D({
     if (!reduce && gl) setReady(true);
     else setFailed(true);
   }, []);
+
+  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    const frame = frameRef.current;
+    if (!frame || event.pointerType === "touch") return;
+    const bounds = frame.getBoundingClientRect();
+    frame.style.setProperty("--reflect-x", `${event.clientX - bounds.left}px`);
+    frame.style.setProperty("--reflect-y", `${event.clientY - bounds.top}px`);
+  }
+
   return (
-    <div className="ow-card__media ow-card__media--3d">
-      {/* Poster is the guaranteed layer; never removed. */}
+    <div
+      className="ow-card__media ow-card__media--3d"
+      onPointerEnter={() => frameRef.current?.style.setProperty("--reflect-opacity", "1")}
+      onPointerLeave={() => frameRef.current?.style.setProperty("--reflect-opacity", "0")}
+      onPointerMove={handlePointerMove}
+      ref={frameRef}
+    >
+      <span aria-hidden="true" className="ow-card__reflection" />
       <img alt={alt} className="ow-card__poster" height={1152} loading="lazy" src={poster} width={928} />
       {ready && !failed ? (
         <div className="ow-card__viewer">

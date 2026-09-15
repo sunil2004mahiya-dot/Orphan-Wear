@@ -19,6 +19,7 @@ const pirata = Pirata_One({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://orphan-wear.vercel.app"),
   title: "Orphan Wear",
   description:
     "The original Orphan brand. One of one streetwear, hand bleached, embroidered and signed in house since 2023.",
