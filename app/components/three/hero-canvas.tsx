@@ -8,7 +8,7 @@ import { AmbientLight, DirectionalLight, PointLight } from "@/app/components/thr
 import { Garment } from "@/app/components/three/garment";
 import { Lightformers } from "@/app/components/three/lightformers";
 
-/** White key light that follows the cursor across the garment (the magnet). */
+/** Neon key light that follows the cursor across the garment. */
 function CursorLight() {
   const light = useRef<THREE.PointLight>(null);
   const { pointer, viewport } = useThree();
@@ -19,7 +19,7 @@ function CursorLight() {
     l.position.x += (pointer.x * viewport.width * 0.5 - l.position.x) * k;
     l.position.y += (pointer.y * viewport.height * 0.5 - l.position.y) * k;
   });
-  return <PointLight ref={light} color="#ffffff" intensity={18} distance={7} decay={2} position={[0, 0, 2.2]} />;
+  return <PointLight ref={light} color="#f4d000" intensity={24} distance={7} decay={2} position={[0, 0, 2.2]} />;
 }
 
 export default function HeroCanvas({
@@ -36,9 +36,11 @@ export default function HeroCanvas({
         dpr={[1, 1.6]}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       >
-        <AmbientLight intensity={0.4} />
-        <DirectionalLight position={[-3, 4, 4]} intensity={2.2} color="#f1efe8" />
-        <DirectionalLight position={[4, -2, -3]} intensity={0.8} color="#9fb7ff" />
+        <AmbientLight intensity={0.68} />
+        <DirectionalLight position={[-3, 4, 4]} intensity={2.8} color="#dffcff" />
+        <DirectionalLight position={[4, -2, -3]} intensity={2.2} color="#8b5cff" />
+        <PointLight color="#00e5ff" intensity={18} distance={6} decay={2} position={[-2.6, 1.2, 1.8]} />
+        <PointLight color="#ff2bd6" intensity={14} distance={5} decay={2} position={[2.4, -0.6, 1.2]} />
         <CursorLight />
         <Suspense fallback={null}>
           <Environment

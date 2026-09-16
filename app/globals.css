@@ -588,23 +588,30 @@ html {
 }
 .ow-hero__tracer::before { left: 50%; top: -8px; width: 1px; height: 16px; }
 .ow-hero__tracer::after { left: -8px; top: 50%; width: 16px; height: 1px; }
-.ow-hero__video {
+.ow-hero__canvas::before {
+  content: "";
   position: absolute;
-  inset: 0;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 1;
-  mix-blend-mode: normal;
-  filter: saturate(0.86) contrast(1.08);
-  transform: translateX(var(--video-drift, 0px)) rotate(var(--video-tilt, 0deg)) scale(1.015);
-  transform-origin: center;
+  inset: 8% 14%;
+  z-index: 0;
   pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgb(0 229 255 / 0.18), transparent 58%), radial-gradient(ellipse at 78% 35%, rgb(255 43 214 / 0.14), transparent 48%);
+  filter: blur(22px);
+  mix-blend-mode: screen;
+}
+.ow-hero__canvas::after {
+  content: "";
+  position: absolute;
+  inset: 12%;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 20%, rgb(255 255 255 / 0.07) 48%, transparent 70%);
+  opacity: 0.7;
+  mix-blend-mode: screen;
 }
 /* Fade the grid out around the tee: no visible base plate */
 .ow-hero__stage {
-  background-image: none;
+  background-image: radial-gradient(ellipse at 50% 42%, rgb(14 30 42 / 0.72), transparent 54%), linear-gradient(125deg, rgb(0 229 255 / 0.06), transparent 34%, rgb(255 43 214 / 0.06));
 }
 .ow-hero__stage > .ow-hero__canvas {
   -webkit-mask-image: radial-gradient(ellipse 74% 74% at 50% 47%, black 48%, transparent 92%);
@@ -742,8 +749,9 @@ html {
     grid-template-columns: 1fr;
     gap: 1.5rem;
     max-height: calc(100dvh - 7rem);
-    overflow: hidden;
-  }
+  overflow: hidden;
+  background: radial-gradient(ellipse at center, rgb(12 24 34 / 0.32), transparent 66%);
+}
   .ow-hero__details {
     width: min(100%, 28rem);
   }

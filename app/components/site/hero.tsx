@@ -1,7 +1,10 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { lazy, Suspense, useEffect, useRef } from "react";
 
 import { CustomCta, ShopCta } from "./ctas";
+
+const HeroCanvas = lazy(() => import("@/app/components/three/hero-canvas"));
+const HERO_MODEL = "/assets/models/cyber-black-tee.glb";
 import { ScrambleText } from "./scramble-text";
 
 /**
@@ -14,19 +17,12 @@ export function Hero() {
   const wrap = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const tracer = useRef<HTMLDivElement>(null);
-  const video = useRef<HTMLVideoElement>(null);
   const progress = useRef(0);
-  const targetTime = useRef(0);
   const pointer = useRef({ x: 0, y: 0, speed: 0 });
 
   useEffect(() => {
     const el = wrap.current;
-    const media = video.current;
     if (!el) return;
-    if (media) {
-      media.currentTime = 0;
-      media.load();
-    }
     let raf = 0;
     const tick = () => {
       const r = el.getBoundingClientRect();
@@ -34,19 +30,7 @@ export function Hero() {
       const p = total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 0;
       progress.current = p;
       el.style.setProperty("--p", p.toFixed(4));
-      const media = video.current;
-      if (media && media.readyState >= 2 && Number.isFinite(media.duration)) {
-        const dissolveProgress = Math.min(1, Math.max(0, (p - 0.18) / 0.82));
-        const safeDuration = Math.max(0, media.duration - 1.0);
-        targetTime.current = safeDuration * dissolveProgress;
-        media.pause();
-        const delta = targetTime.current - media.currentTime;
-        if (Math.abs(delta) > 0.006 && !media.seeking) {
-          media.currentTime = targetTime.current;
-        }
-        media.style.setProperty("--video-tilt", `${pointer.current.x * 1.8}deg`);
-        media.style.setProperty("--video-drift", `${pointer.current.x * 8}px`);
-      }
+
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -105,17 +89,9 @@ export function Hero() {
           <img alt="" height={1024} src="/assets/brand/orphan-mark.png" width={1024} />
         </div>
         <div className="ow-hero__canvas">
-          <video
-            ref={video}
-            aria-hidden="true"
-            className="ow-hero__video"
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Dissolve%202-DvAgmdEYFqrKmiZgizmpSz7zwmqbBf.mp4"
-          />
+          <Suspense fallback={null}>
+            <HeroCanvas progress={progress} url={HERO_MODEL} />
+          </Suspense>
         </div>
 
         <div aria-hidden="true" className="ow-hero__tracer" ref={tracer} />

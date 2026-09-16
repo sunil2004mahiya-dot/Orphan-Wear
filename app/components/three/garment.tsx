@@ -134,13 +134,15 @@ export function Garment({
     const k = 1 - Math.exp(-dt * 4);
     tilt.current.x += (pointer.y * magnet * h - tilt.current.x) * k;
     tilt.current.y += (pointer.x * magnet * 1.4 * h - tilt.current.y) * k;
-    g.rotation.x = -tilt.current.x * 0.42 + Math.sin(t * 0.7) * 0.018;
-    g.rotation.y = tilt.current.y * 0.82 + Math.sin(t * spin) * 0.08;
-    g.position.x = pointer.x * magnet * 0.08 * h;
-    g.position.y = yOffset + Math.sin(t * 1.1) * floatAmp + p * 0.35;
-    // dissolve on the second half of the header scroll
-    const d = THREE.MathUtils.clamp((p - 0.45) / 0.5, 0, 1);
-    uniforms.uDissolve.value = d;
+    const sway = Math.sin(t * 1.7 + pointer.x * 2) * 0.025;
+    const flex = Math.sin(t * 2.1 + pointer.y * 1.5) * 0.018;
+    g.rotation.x = -tilt.current.x * 0.42 + flex;
+    g.rotation.y = tilt.current.y * 0.82 + sway + Math.sin(t * spin) * 0.04;
+    g.rotation.z = pointer.x * pointer.y * 0.035;
+    g.position.x = pointer.x * magnet * 0.08 * h + sway * 0.25;
+    g.position.y = yOffset + Math.sin(t * 1.1) * floatAmp + p * 0.35 + flex * 0.3;
+    // Keep the black shirt visible through the full hero construction sequence.
+    uniforms.uDissolve.value = 0;
     const sc = scale * (1 + Math.min(p, 0.45) * 0.55);
     g.scale.setScalar(sc);
   });
