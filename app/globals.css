@@ -242,7 +242,11 @@ html {
   margin-top: clamp(2.5rem, 5vw, 4rem);
   border: 1px solid var(--ow-line);
   overflow-x: auto;
+  overflow-y: hidden;
   scroll-snap-type: x mandatory;
+  touch-action: pan-x;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
 }
 .ow-card {
@@ -402,6 +406,9 @@ html {
   color: var(--ow-ink);
 }
 @media (max-width: 860px) {
+  .ow-hero__tracer {
+    display: none;
+  }
   .ow-swipe-hint {
     display: flex;
     align-items: center;
@@ -441,9 +448,20 @@ html {
     background: var(--ow-ink);
     animation: ow-swipe 1.6s ease-in-out infinite;
   }
+  .ow-hero__logo {
+    opacity: calc(0.46 - var(--p) * 0.12);
+    mix-blend-mode: screen;
+  }
+  .ow-hero__logo img {
+    width: min(132vw, 40rem);
+    filter: blur(0.35px) brightness(1.7) contrast(1.25);
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
   .ow-card { min-height: 500px; }
   .ow-card__media--3d { min-height: 270px; }
   .ow-card__media--3d img { width: 68%; max-height: 250px; }
+  .ow-card__media--3d canvas { pointer-events: none; }
   .ow-letter {
     grid-template-columns: 1fr;
   }
