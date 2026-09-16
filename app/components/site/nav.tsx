@@ -21,7 +21,10 @@ export default function SiteNav() {
           </a>
         ))}
       </nav>
-      <span className="ow-nav__meta">Est. 2023</span>
+      <div className="ow-nav__right">
+        <span className="ow-nav__meta">Est. 2023</span>
+        <span className="ow-nav__shipping">Each piece is made to order and ships from the Orphan table.</span>
+      </div>
     </header>
   );
 }

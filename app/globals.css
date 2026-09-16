@@ -20,6 +20,9 @@ html {
   --ow-muted: #8b8b86;
   --ow-accent: #e9c400;
   --ow-accent-ink: #0b0b0b;
+  --ow-cyan: #00e5ff;
+  --ow-magenta: #ff2bd6;
+  --ow-panel: #101317;
   --ow-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   --ow-black: "Pirata One", "UnifrakturCook", serif;
   --ow-cell: 48px;
@@ -97,10 +100,29 @@ html {
 .ow-nav__links a:hover {
   color: var(--ow-ink);
 }
-.ow-nav__meta {
+.ow-nav__right {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 2rem);
+  min-width: 0;
+}
+.ow-nav__meta,
+.ow-nav__shipping {
   font-size: 0.62rem;
   letter-spacing: 0.2em;
   color: var(--ow-muted);
+}
+.ow-nav__shipping {
+  max-width: 22rem;
+  padding-left: 1rem;
+  border-left: 1px solid var(--ow-line);
+  color: var(--ow-cyan);
+  line-height: 1.35;
+  text-align: right;
+  text-wrap: balance;
+}
+@media (max-width: 760px) {
+  .ow-nav__shipping { display: none; }
 }
 @media (max-width: 860px) {
   .ow-nav__links {
@@ -181,6 +203,7 @@ html {
   position: relative;
   border-top: 1px solid var(--ow-line);
   padding: clamp(4rem, 9vw, 8rem) clamp(1rem, 4vw, 4rem);
+  background-image: radial-gradient(circle at 80% 12%, rgb(0 229 255 / 0.045), transparent 24%), radial-gradient(circle at 18% 78%, rgb(255 43 214 / 0.035), transparent 28%);
 }
 .ow-eyebrow {
   font-size: 0.64rem;
@@ -233,7 +256,10 @@ html {
   border-right: 0;
 }
 .ow-card:hover {
-  box-shadow: inset 0 0 0 1px var(--ow-accent);
+  box-shadow: inset 0 0 0 1px var(--ow-accent), 0 0 28px rgb(0 229 255 / 0.08);
+}
+.ow-card:nth-child(2n):hover {
+  box-shadow: inset 0 0 0 1px var(--ow-magenta), 0 0 28px rgb(255 43 214 / 0.08);
 }
 .ow-card__head,
 .ow-card__title {
@@ -416,7 +442,7 @@ html {
 .ow-band__row {
   display: flex;
   flex-wrap: wrap;
-  align-items: end;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 2rem;
   margin-top: 2rem;
@@ -639,7 +665,7 @@ html {
 }
 .ow-hero__copy--two {
   grid-template-columns: minmax(18rem, 0.9fr) minmax(20rem, 1fr);
-  align-items: end;
+  align-items: flex-end;
   gap: clamp(2rem, 8vw, 9rem);
 }
 .ow-hero__statement {
@@ -749,9 +775,8 @@ html {
     grid-template-columns: 1fr;
     gap: 1.5rem;
     max-height: calc(100dvh - 7rem);
-  overflow: hidden;
-  background: radial-gradient(ellipse at center, rgb(12 24 34 / 0.32), transparent 66%);
-}
+    overflow: hidden;
+  }
   .ow-hero__details {
     width: min(100%, 28rem);
   }
