@@ -18,11 +18,11 @@ html {
   --ow-line: #2a2a2a;
   --ow-ink: #f1efe8;
   --ow-muted: #8b8b86;
-  --ow-accent: #e9c400;
+  --ow-accent: #f1efe8;
   --ow-accent-ink: #0b0b0b;
-  --ow-cyan: #00e5ff;
-  --ow-magenta: #ff2bd6;
-  --ow-panel: #101317;
+  --ow-cyan: #f1efe8;
+  --ow-magenta: #8b8b86;
+  --ow-panel: #111111;
   --ow-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   --ow-black: "Pirata One", "UnifrakturCook", serif;
   --ow-cell: 48px;
@@ -116,7 +116,7 @@ html {
   max-width: 22rem;
   padding-left: 1rem;
   border-left: 1px solid var(--ow-line);
-  color: var(--ow-cyan);
+  color: var(--ow-muted);
   line-height: 1.35;
   text-align: right;
   text-wrap: balance;
@@ -153,7 +153,7 @@ html {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: var(--ow-accent);
+  background: var(--ow-ink);
   transform: scaleX(0);
   transform-origin: left center;
   transition: transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -203,7 +203,7 @@ html {
   position: relative;
   border-top: 1px solid var(--ow-line);
   padding: clamp(4rem, 9vw, 8rem) clamp(1rem, 4vw, 4rem);
-  background-image: radial-gradient(circle at 80% 12%, rgb(0 229 255 / 0.045), transparent 24%), radial-gradient(circle at 18% 78%, rgb(255 43 214 / 0.035), transparent 28%);
+  background-image: radial-gradient(circle at 80% 12%, rgb(255 255 255 / 0.035), transparent 24%), radial-gradient(circle at 18% 78%, rgb(255 255 255 / 0.02), transparent 28%);
 }
 .ow-eyebrow {
   font-size: 0.64rem;
@@ -231,6 +231,9 @@ html {
   color: var(--ow-muted);
 }
 /* ---------- Product rail ---------- */
+.ow-swipe-hint {
+  display: none;
+}
 .ow-rail {
   display: grid;
   grid-auto-flow: column;
@@ -249,17 +252,19 @@ html {
   min-height: 560px;
   border-right: 1px solid var(--ow-line);
   scroll-snap-align: start;
-  transition: box-shadow 200ms ease-out;
+  transition: box-shadow 260ms ease-out, transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1), border-radius 260ms ease-out;
   overflow: hidden;
+  transform: translateY(0);
+}
+.ow-card:hover {
+  transform: translateY(8px);
+  border-radius: 0 0 18px 18px;
 }
 .ow-card:last-child {
   border-right: 0;
 }
 .ow-card:hover {
-  box-shadow: inset 0 0 0 1px var(--ow-accent), 0 0 28px rgb(0 229 255 / 0.08);
-}
-.ow-card:nth-child(2n):hover {
-  box-shadow: inset 0 0 0 1px var(--ow-magenta), 0 0 28px rgb(255 43 214 / 0.08);
+  box-shadow: inset 0 0 0 1px var(--ow-ink), 0 18px 40px rgb(0 0 0 / 0.4);
 }
 .ow-card__head,
 .ow-card__title {
@@ -318,7 +323,7 @@ html {
 }
 .ow-card__shop {
   justify-content: space-between;
-  background: var(--ow-accent);
+  background: var(--ow-ink);
   color: var(--ow-accent-ink);
   font-weight: 700;
   transform: translateY(100%);
@@ -397,6 +402,48 @@ html {
   color: var(--ow-ink);
 }
 @media (max-width: 860px) {
+  .ow-swipe-hint {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 2.25rem;
+    color: var(--ow-muted);
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+  }
+  .ow-swipe-hint i {
+    position: relative;
+    display: block;
+    width: 4rem;
+    height: 1px;
+    background: var(--ow-line);
+  }
+  .ow-swipe-hint i::before,
+  .ow-swipe-hint i::after {
+    content: "";
+    position: absolute;
+    top: -3px;
+    width: 7px;
+    height: 7px;
+    border-top: 1px solid var(--ow-muted);
+    border-right: 1px solid var(--ow-muted);
+    transform: rotate(45deg);
+  }
+  .ow-swipe-hint i::before { left: 0; transform: rotate(-135deg); }
+  .ow-swipe-hint i::after { right: 0; }
+  .ow-swipe-hint b {
+    position: absolute;
+    top: -2px;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--ow-ink);
+    animation: ow-swipe 1.6s ease-in-out infinite;
+  }
+  .ow-card { min-height: 500px; }
+  .ow-card__media--3d { min-height: 270px; }
+  .ow-card__media--3d img { width: 68%; max-height: 250px; }
   .ow-letter {
     grid-template-columns: 1fr;
   }
@@ -517,7 +564,7 @@ html {
   right: 0;
   bottom: 0;
   height: 1px;
-  background: var(--ow-accent);
+  background: var(--ow-ink);
   transform: scaleX(0);
   transform-origin: left center;
   transition: transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -621,7 +668,7 @@ html {
   z-index: 0;
   pointer-events: none;
   border-radius: 50%;
-  background: radial-gradient(ellipse, rgb(0 229 255 / 0.18), transparent 58%), radial-gradient(ellipse at 78% 35%, rgb(255 43 214 / 0.14), transparent 48%);
+  background: radial-gradient(ellipse, rgb(255 255 255 / 0.1), transparent 58%), radial-gradient(ellipse at 78% 35%, rgb(255 255 255 / 0.06), transparent 48%);
   filter: blur(22px);
   mix-blend-mode: screen;
 }
@@ -637,7 +684,7 @@ html {
 }
 /* Fade the grid out around the tee: no visible base plate */
 .ow-hero__stage {
-  background-image: radial-gradient(ellipse at 50% 42%, rgb(14 30 42 / 0.72), transparent 54%), linear-gradient(125deg, rgb(0 229 255 / 0.06), transparent 34%, rgb(255 43 214 / 0.06));
+  background-image: radial-gradient(ellipse at 50% 42%, rgb(255 255 255 / 0.08), transparent 54%), linear-gradient(125deg, rgb(255 255 255 / 0.025), transparent 34%, rgb(255 255 255 / 0.02));
 }
 .ow-hero__stage > .ow-hero__canvas {
   -webkit-mask-image: radial-gradient(ellipse 74% 74% at 50% 47%, black 48%, transparent 92%);
@@ -810,6 +857,10 @@ html {
 /* ---------- Motion ---------- */
 .ow-rise {
   animation: ow-rise 900ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes ow-swipe {
+  0%, 100% { transform: translateX(-10px); opacity: 0.45; }
+  50% { transform: translateX(10px); opacity: 1; }
 }
 @keyframes ow-rise {
   from {

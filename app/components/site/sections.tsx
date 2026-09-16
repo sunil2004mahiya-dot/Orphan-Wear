@@ -79,6 +79,10 @@ export function DropSection() {
         The Started in Last collection and the current one of ones. Prices as
         listed on Instagram. Sizes are what is left, not what we can remake.
       </p>
+      <div className="ow-swipe-hint" aria-hidden="true">
+        <span>Swipe to scan the drop</span>
+        <i><b /></i>
+      </div>
       <div className="ow-rail">
         {PRODUCTS.map((p) => (
           <article className="ow-card" key={p.n}>

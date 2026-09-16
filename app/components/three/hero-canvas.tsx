@@ -19,7 +19,7 @@ function CursorLight() {
     l.position.x += (pointer.x * viewport.width * 0.5 - l.position.x) * k;
     l.position.y += (pointer.y * viewport.height * 0.5 - l.position.y) * k;
   });
-  return <PointLight ref={light} color="#f4d000" intensity={24} distance={7} decay={2} position={[0, 0, 2.2]} />;
+  return <PointLight ref={light} color="#ffffff" intensity={24} distance={7} decay={2} position={[0, 0, 2.2]} />;
 }
 
 export default function HeroCanvas({
@@ -38,9 +38,9 @@ export default function HeroCanvas({
       >
         <AmbientLight intensity={0.68} />
         <DirectionalLight position={[-3, 4, 4]} intensity={2.8} color="#dffcff" />
-        <DirectionalLight position={[4, -2, -3]} intensity={2.2} color="#8b5cff" />
-        <PointLight color="#00e5ff" intensity={18} distance={6} decay={2} position={[-2.6, 1.2, 1.8]} />
-        <PointLight color="#ff2bd6" intensity={14} distance={5} decay={2} position={[2.4, -0.6, 1.2]} />
+        <DirectionalLight position={[4, -2, -3]} intensity={1.8} color="#bdbdbd" />
+        <PointLight color="#ffffff" intensity={12} distance={6} decay={2} position={[-2.6, 1.2, 1.8]} />
+        <PointLight color="#777777" intensity={9} distance={5} decay={2} position={[2.4, -0.6, 1.2]} />
         <CursorLight />
         <Suspense fallback={null}>
           <Environment

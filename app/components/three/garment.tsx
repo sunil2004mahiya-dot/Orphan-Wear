@@ -58,7 +58,7 @@ export function Garment({
   floatAmp = 0.06,
   spin = 0.12,
   magnet = 0.45,
-  edgeColor = "#e9c400",
+  edgeColor = "#f1efe8",
   yOffset = 0,
 }: GarmentProps) {
   const { scene } = useGLTF(url);
@@ -70,7 +70,7 @@ export function Garment({
     }),
     [edgeColor],
   );
-  const { pointer } = useThree();
+  const { pointer, viewport } = useThree();
   const tilt = useRef({ x: 0, y: 0 });
 
   // Center + normalize the model once; patch materials for the dissolve.
@@ -130,20 +130,26 @@ export function Garment({
     const t = state.clock.elapsedTime;
     const p = progress?.current ?? 0;
     const h = hover?.current ?? 1;
-    // magnet: ease toward pointer
-    const k = 1 - Math.exp(-dt * 4);
-    tilt.current.x += (pointer.y * magnet * h - tilt.current.x) * k;
-    tilt.current.y += (pointer.x * magnet * 1.4 * h - tilt.current.y) * k;
-    const sway = Math.sin(t * 1.7 + pointer.x * 2) * 0.025;
-    const flex = Math.sin(t * 2.1 + pointer.y * 1.5) * 0.018;
-    g.rotation.x = -tilt.current.x * 0.42 + flex;
-    g.rotation.y = tilt.current.y * 0.82 + sway + Math.sin(t * spin) * 0.04;
-    g.rotation.z = pointer.x * pointer.y * 0.035;
-    g.position.x = pointer.x * magnet * 0.08 * h + sway * 0.25;
-    g.position.y = yOffset + Math.sin(t * 1.1) * floatAmp + p * 0.35 + flex * 0.3;
+    const isMobile = viewport.width < 5;
+    const activeMagnet = isMobile ? 0 : magnet;
+    // Feather-like lag keeps the shirt loose and reactive without snapping.
+    const k = 1 - Math.exp(-dt * 2.6);
+    const targetX = pointer.y * activeMagnet * h;
+    const targetY = pointer.x * activeMagnet * 1.4 * h;
+    tilt.current.x += (targetX - tilt.current.x) * k;
+    tilt.current.y += (targetY - tilt.current.y) * k;
+    const sway = Math.sin(t * 1.25 + pointer.x * 2) * 0.04;
+    const flex = Math.sin(t * 1.65 + pointer.y * 1.5) * 0.032;
+    const sleeveDip = pointer.x * pointer.x * 0.04;
+    g.rotation.x = -tilt.current.x * 0.52 + flex;
+    g.rotation.y = tilt.current.y * 0.9 + sway + Math.sin(t * spin) * 0.05;
+    g.rotation.z = pointer.x * pointer.y * 0.06;
+    g.position.x = pointer.x * activeMagnet * 0.1 * h + sway * 0.3;
+    g.position.y = yOffset + Math.sin(t * 0.9) * floatAmp + p * 0.35 + flex * 0.35 - sleeveDip;
     // Keep the black shirt visible through the full hero construction sequence.
     uniforms.uDissolve.value = 0;
-    const sc = scale * (1 + Math.min(p, 0.45) * 0.55);
+    const mobileScale = isMobile ? 0.72 : 1;
+    const sc = scale * mobileScale * (1 + Math.min(p, 0.45) * 0.55);
     g.scale.setScalar(sc);
   });
 
